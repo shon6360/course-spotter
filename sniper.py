@@ -1,4 +1,4 @@
-import requests, time
+import requests, time, atexit
 
 DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1438576405490307122/SFSjV9tXIZMqL5dVKceg7hJYGfzhRgplky_DJW8wyHKzuGw7j2gLSJo_HocPp7y5A4Ie"
 
@@ -29,6 +29,9 @@ def print_courses(courses):
 def notify_discord(msg):
 	requests.post(DISCORD_WEBHOOK, json={"content": msg}, timeout=10)
 
+def cleanup():
+	notify_discord("Sniper disabled")
+
 #main
 subject = "198"
 campus = "NB"
@@ -37,11 +40,12 @@ semester = "12026"
 
 courses = ["213", "336"]
 
+notify_discord("Sniper enabled")
+atexit.register(cleanup)
 while True:
 	all_courses = get_courses(subject, semester, campus, level)
 	for course in all_courses:
 		if(course["courseNumber"] in courses):
-			#notify_discord((course["title"] + " PRESENT!"))
 			if (int(course["openSections"]) > 0): 
 				for section in course["sections"]:
 					if(section["openStatus"]):
