@@ -40,6 +40,8 @@ semester = "12026"
 
 courses = ["213", "336"]
 
+link = "https://sims.rutgers.edu/webreg/editSchedule.htm?login=cas&"
+
 notify_discord("Sniper enabled")
 atexit.register(cleanup)
 while True:
@@ -49,7 +51,8 @@ while True:
 			if (int(course["openSections"]) > 0): 
 				for section in course["sections"]:
 					if(section["openStatus"]):
-						notify_discord(course["title"] + " IS OPEN, SECTION: " + section["number"] + " INDEX: " + section["index"]);
-	time.sleep(1)
+						notify_discord(course["title"] + " IS OPEN\nSECTION: " + section["number"] + "\nINDEX: " + section["index"] + "\n" + link + "semesterSelection=" + semester + "&indexList=" + section["index"]);
+
+	time.sleep(300)
 
 
