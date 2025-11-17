@@ -2,6 +2,9 @@ import requests, time, atexit
 
 DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1438576405490307122/SFSjV9tXIZMqL5dVKceg7hJYGfzhRgplky_DJW8wyHKzuGw7j2gLSJo_HocPp7y5A4Ie"
 
+def notify_discord(msg):
+	requests.post(DISCORD_WEBHOOK, json={"content": msg}, timeout=10)
+
 def get_courses(subject, semester, campus, level):
 	url = "https://sis.rutgers.edu/oldsoc/courses.json"
 	params = {
@@ -17,7 +20,7 @@ def get_courses(subject, semester, campus, level):
 		return courses
 
 	except requests.exceptions.RequestException as e:
-		print(f"Error: {e}")
+		notify_discord("Error: "+e)
 
 def print_courses(courses):
 		for course in courses:
@@ -26,8 +29,6 @@ def print_courses(courses):
 				print(f"  Section: {section['number']} - Seats: {section['openStatus']}")
 
 
-def notify_discord(msg):
-	requests.post(DISCORD_WEBHOOK, json={"content": msg}, timeout=10)
 
 def cleanup():
 	notify_discord("Sniper disabled")
@@ -38,9 +39,9 @@ campus = "NB"
 level = "U"
 semester = "12026"
 
-courses = ["213", "336"]
+courses = ["213","336", "440", "428"]
 
-link = "https://sims.rutgers.edu/webreg/editSchedule.htm?login=cas&"
+link = "https://sims.rutgers.edu/webreg/editSchedule.htm?login=cas"
 
 notify_discord("Sniper enabled")
 atexit.register(cleanup)
@@ -48,11 +49,18 @@ while True:
 	all_courses = get_courses(subject, semester, campus, level)
 	for course in all_courses:
 		if(course["courseNumber"] in courses):
-			if (int(course["openSections"]) > 0): 
+			if (int(course["openSections"]) > 0):
 				for section in course["sections"]:
 					if(section["openStatus"]):
-						notify_discord(course["title"] + " IS OPEN\nSECTION: " + section["number"] + "\nINDEX: " + section["index"] + "\n" + link + "semesterSelection=" + semester + "&indexList=" + section["index"]);
-
-	time.sleep(300)
+						message = course["title"] + " IS OPEN\n"
+						message += "SECTION: " + section["number"] + "\n"
+						message += "INDEX: " + section["index"] + "\n" 
+						message += "MEETING TIMES:\n"
+						for i in section["meetingTimes"]:
+							message += i["meetingDay"] + " -> "
+							message += i["startTime"][:2]+":"+i["startTime"][2:] + " - " + i["endTime"][:2]+":"+i["endTime"][2:] + "\n" 
+						message += link + "&semesterSelection=" + semester + "&indexList=" + section["index"]
+						notify_discord(message);
+	time.sleep(30)
 
 

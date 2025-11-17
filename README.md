@@ -4,5 +4,5 @@ For now, written in python and uses requests to get the info from SoC then reque
 
 For the future, I want to:
 - Live update the sniping list without downtime
-- Transition to C for that marginal increase in speed
-- Add automatic course registration
+- Remove errors from the API (sometimes there are false positives, implying there may also be false negatives that go undetected)
+- Allow for multiple users
