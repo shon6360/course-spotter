@@ -2,7 +2,11 @@ After doing 0 research and 0 testing, I came to the conclusion that all other sn
 
 For now, written in python and uses requests to get the info from SoC then requests to send a message to my discord server.
 
+
 For the future, I want to:
 - Live update the sniping list without downtime
 - Remove errors from the API (sometimes there are false positives, implying there may also be false negatives that go undetected)
 - Allow for multiple users
+
+
+BUt first, optimizations and whatnot need to be made
