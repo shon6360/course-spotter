@@ -9,4 +9,4 @@ For the future, I want to:
 - Allow for multiple users
 
 
-BUt first, optimizations and whatnot need to be made
+But currently the project is in a very rought prototype phase where I'm just trying to get basic core functionality working reliably and accurately. From here, I want to add basic features, improve search algorithms, and transition this to a language that is not horribly slow python. I'm thinking C because that could be fun. 
