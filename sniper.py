@@ -1,7 +1,8 @@
-import requests, time, atexit, sys
+import requests, time, atexit, os
 
-# important links
-DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1438576405490307122/SFSjV9tXIZMqL5dVKceg7hJYGfzhRgplky_DJW8wyHKzuGw7j2gLSJo_HocPp7y5A4Ie"
+# important stuff
+MY_DISCORD_USER = os.getenv("MY_DISCORD_USER")
+DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 ALL_COURSES_URL = "https://classes.rutgers.edu/soc/api/courses.json"
 ALL_OPEN_SECTIONS_URL = "https://classes.rutgers.edu/soc/api/openSections.json"
 WEBREG_URL = "https://sims.rutgers.edu/webreg/editSchedule.htm?login=cas"
@@ -9,7 +10,7 @@ WEBREG_URL = "https://sims.rutgers.edu/webreg/editSchedule.htm?login=cas"
 # Helpers
 def notify_discord(msg):
 	'''
-	Essentially our output stream, 'msg' is a string
+	Essentially our output stream which is sent to my discord, 'msg' is a string
 	'''
 	global DISCORD_WEBHOOK
 	requests.post(DISCORD_WEBHOOK, json={"content": msg}, timeout=10)
@@ -31,16 +32,16 @@ def request(url, params):
 		notify_discord("Error: "+e)
 		return None
 
-def get_indexes(all_courses, course_titles):
+def get_indexes(all_courses, course_strings):
 	'''
 	Search for each course in the list 'courses' in 'all_courses' by 'courseString'
 	return a list of all the indexes
 	'''
 	indexes = []
 	for course in all_courses:
-		if course["courseString"] in course_titles:
+		if course["courseString"] in course_strings:
 			for section in course["sections"]:
-				indexes.append(section["index"])
+				indexes.append({"index": section["index"], "courseString": course["courseString"], "expandedTitle" : course["expandedTitle"], "meetingTimes" : section["meetingTimes"]})
 	return indexes
 
 
@@ -52,22 +53,23 @@ def main():
 		"term": "1",
 		"campus": "NB"
 	}
-	users_and_course_titles = {
-		"<@624421039069200385>" : ["01:198:213", "01:198:336", "01:198:440", "01:198:428"]
+	users_and_course_strings = {
+		MY_DISCORD_USER : ["01:198:213", "01:198:336", "01:198:440", "01:198:428"]
 	}
 	users_and_indexes = {}
 	
 	all_courses = request(ALL_COURSES_URL, params)
 	
-	for user in users_and_course_titles:
-		users_and_indexes[user] = get_indexes(all_courses, users_and_course_titles[user]);
+	for user in users_and_course_strings:
+		users_and_indexes[user] = get_indexes(all_courses, users_and_course_strings[user]);
 	notify_discord("Sniper enabled")
 	while True:
 		all_open_sections = request(ALL_OPEN_SECTIONS_URL, params);		
 		for user in users_and_indexes:
-			for index in users_and_indexes[user]:
+			for index in users_and_indexes[user]: # this is a linear search, needs to be replaced with binary search or something
 				if(index in all_open_sections):
 					notify_discord("hello");
-
+	
+	time.sleep(60)
 
 main();
