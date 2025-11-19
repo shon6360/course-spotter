@@ -1,5 +1,5 @@
 # Course Sniper
-Really more of a course "spotter" than a sniper, a sniper takes the shot, which in this case would be registering for the class but doing so could result in a ban from WebReg usage which is not a risk I'm willing to take (yet). It's more of a spotter because it points out the open sections for you to grab, not unlike a spotter pointing out targets for a sniper.
+Really more of a course "spotter" than a sniper. A sniper takes the shot, which in this case would be registering for the class but doing so could result in a ban from WebReg usage which is not a risk I'm willing to take (yet). It's more of a spotter because it points out the open sections for you to grab, not unlike a spotter pointing out targets for a sniper.
 
 ## Introduction
 After doing 0 research and 0 testing, I came to the conclusion that all other sniping bots are inherently worse than anything I could ever make myself. For that reason, I have made my own course openning notification bot (since sniping bots can never truly snipe classes, just notify you as to when courses open, thus making them more of a spotter?) which will tell me when the courses I require are open. 
